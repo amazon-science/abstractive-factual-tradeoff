@@ -36,7 +36,7 @@ The `pip` command installs a script called `mint`, which you can call like this:
 Our paper introduces nonlinear abstractiveness constraints to control
 the degree of abstractiveness during beam decoding. Using the constraint with different values for the parameter `h`, you can generate summaries with varying degrees of abstractiveness, as in the figure below.
 
-![Successively more abstract summaries](img/three_summaries.png)
+<img src="img/three_summaries.png" width="200">
 
 #### Python library `abstractive_constraints`
 
