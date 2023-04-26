@@ -1,6 +1,6 @@
 # Evaluating the Tradeoff Between Abstractiveness and Factuality in Abstractive Summarization
 
-This repository contains the code for our paper (**the dataset will be added soon**):
+This repository contains the code for the [Dreyer et al (2023)](https://arxiv.org/abs/2108.02859) paper (**the dataset will be added soon**):
 
 > Markus Dreyer, Mengwen Liu, Feng Nan, Sandeep Atluri, Sujith Ravi. 2023. Evaluating the Tradeoff Between Abstractiveness and Factuality in Abstractive Summarization. In *Proceedings of EACL Findings*. 
 
