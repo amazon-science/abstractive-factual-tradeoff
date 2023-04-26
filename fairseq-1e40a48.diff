@@ -1,0 +1,218 @@
+diff --git fairseq/data/encoders/gpt2_bpe.py fairseq/data/encoders/gpt2_bpe.py
+index 54e0593..40774f6 100644
+--- fairseq/data/encoders/gpt2_bpe.py
++++ fairseq/data/encoders/gpt2_bpe.py
+@@ -41,7 +41,7 @@ class GPT2BPE(object):
+ 
+     def decode(self, x: str) -> str:
+         return self.bpe.decode([
+-            int(tok) if tok not in {'<unk>', '<mask>'} else tok
++            int(tok) if tok not in {'<unk>', '<mask>', '<pad>', 'madeupword0000', 'madeupword0001', 'madeupword0002', 'madeupword0003'} else tok
+             for tok in x.split()
+         ])
+ 
+diff --git fairseq/models/bart/hub_interface.py fairseq/models/bart/hub_interface.py
+index f87291b..5cbdf7b 100644
+--- fairseq/models/bart/hub_interface.py
++++ fairseq/models/bart/hub_interface.py
+@@ -16,7 +16,6 @@ from typing import List
+ from fairseq import utils
+ from fairseq.data import encoders
+ 
+-
+ logger = logging.getLogger(__name__)
+ 
+ 
+@@ -121,6 +120,7 @@ class BARTHubInterface(nn.Module):
+             [self.model],
+             sample,
+             prefix_tokens=sample['net_input']['src_tokens'].new_zeros((len(tokens), 1)).fill_(self.task.source_dictionary.bos()),
++            bos_token=self.task.source_dictionary.bos(),
+         )
+ 
+         if verbose:
+diff --git fairseq/options.py fairseq/options.py
+index 07390e2..e52e87a 100644
+--- fairseq/options.py
++++ fairseq/options.py
+@@ -573,6 +573,8 @@ def add_generation_args(parser):
+                        help='initialize generation by target prefix of given length')
+     group.add_argument('--no-repeat-ngram-size', default=0, type=int, metavar='N',
+                        help='ngram blocking such that this size ngram cannot be repeated in the generation')
++    group.add_argument('--extractive-penalty-fct', type=str, metavar='STR',
++                       help='Extractive penalty function')
+     group.add_argument('--sampling', action='store_true',
+                        help='sample hypotheses instead of using beam search')
+     group.add_argument('--sampling-topk', default=-1, type=int, metavar='PS',
+diff --git fairseq/search.py fairseq/search.py
+index 667a151..5d119d3 100644
+--- fairseq/search.py
++++ fairseq/search.py
+@@ -335,7 +335,7 @@ class DiverseSiblingsSearch(Search):
+             k,
+         )
+ 
+-        final_beams = torch.div(final_indices, k)
++        final_beams = torch.true_divide(final_indices, k)
+ 
+         for i in range(bsz):
+             final_indices[i] = indices[i][final_indices[i]]
+diff --git fairseq/sequence_generator.py fairseq/sequence_generator.py
+index 7ecdde8..7924b1b 100644
+--- fairseq/sequence_generator.py
++++ fairseq/sequence_generator.py
+@@ -12,6 +12,7 @@ from fairseq import search, utils
+ from fairseq.data import data_utils
+ from fairseq.models import FairseqIncrementalDecoder
+ from fairseq.models.fairseq_encoder import EncoderOut
++from abstractive_constraints.abstractive_constraints import ExtractiveLengthPenalty, LengthFunction
+ from torch import Tensor
+ 
+ 
+@@ -33,6 +34,7 @@ class SequenceGenerator(nn.Module):
+         no_repeat_ngram_size=0,
+         search_strategy=None,
+         eos=None,
++        extractive_penalty_fct=None
+     ):
+         """Generates translations of a given source sentence.
+ 
+@@ -57,6 +59,7 @@ class SequenceGenerator(nn.Module):
+                 sharper samples (default: 1.0)
+             match_source_len (bool, optional): outputs should match the source
+                 length (default: False)
++
+         """
+         super().__init__()
+         if isinstance(models, EnsembleModel):
+@@ -73,7 +76,6 @@ class SequenceGenerator(nn.Module):
+         self.max_len_a = max_len_a
+         self.max_len_b = max_len_b
+         self.min_len = min_len
+-
+         self.normalize_scores = normalize_scores
+         self.len_penalty = len_penalty
+         self.unk_penalty = unk_penalty
+@@ -81,6 +83,8 @@ class SequenceGenerator(nn.Module):
+         self.temperature = temperature
+         self.match_source_len = match_source_len
+         self.no_repeat_ngram_size = no_repeat_ngram_size
++        self.extractive_penalty_fct = extractive_penalty_fct
++        self.extractive_penalty = None
+         assert temperature > 0, "--temperature must be greater than 0"
+ 
+         self.search = (
+@@ -168,6 +172,19 @@ class SequenceGenerator(nn.Module):
+     ):
+         net_input = sample["net_input"]
+         src_tokens = net_input["src_tokens"]
++
++        if self.extractive_penalty_fct is not None:
++            self.extractive_penalty = []
++            bos = self.eos if bos_token is None else bos_token
++            for tok in src_tokens: # multiple inputs in batch
++                mask = (tok != bos) & (tok != self.eos) & (tok != self.pad) & (tok != 0)
++                tok_filtered = tok[mask].cpu().tolist()
++                for b in range(self.beam_size):
++                    pf = LengthFunction.create_from_description(self.extractive_penalty_fct)
++                    elp = ExtractiveLengthPenalty(input_tokens=tok_filtered,
++                                                  penalty_fct=pf)
++                    self.extractive_penalty.append(elp)
++
+         # length of the source text being the character length except EndOfSentence and pad
+         src_lengths = (
+             (src_tokens.ne(self.eos) & src_tokens.ne(self.pad)).long().sum(dim=1)
+@@ -265,6 +282,11 @@ class SequenceGenerator(nn.Module):
+             lprobs[:, self.pad] = -math.inf  # never select pad
+             lprobs[:, self.unk] -= self.unk_penalty  # apply unk penalty
+ 
++            # from https://github.com/pytorch/fairseq/issues/1971#issuecomment-629869561:
++            if bos_token is not None:
++                # lprobs[:, bos_token] = 1000 if step == 0 else -math.inf
++                lprobs[:, bos_token] = 85 if step == 0 else -math.inf # higher than 85 crashes when sampling
++
+             # handle max length constraint
+             if step >= max_len:
+                 lprobs[:, : self.eos] = -math.inf
+@@ -304,6 +326,20 @@ class SequenceGenerator(nn.Module):
+             if self.no_repeat_ngram_size > 0:
+                 lprobs = self._no_repeat_ngram(tokens, lprobs, bsz, beam_size, step)
+ 
++            if self.extractive_penalty is not None:
++                for i in range(bsz * beam_size):
++                    tok = tokens[i]
++                    mask = (tok != bos) & (tok != self.eos) & (tok != self.pad) & (tok != 0)
++                    tok_filtered = tok[mask].cpu().tolist()
++                    if len(tok_filtered):
++                        self.extractive_penalty[i].replay_query(tok_filtered)
++                        assert(self.extractive_penalty[i].query == tok_filtered)
++                        penalties = self.extractive_penalty[i].peek()
++                        for k, v in penalties.items():
++                            max_penalty = max(v.values())
++                            if max_penalty:
++                                lprobs[i][k] -= max_penalty
++
+             cand_scores, cand_indices, cand_beams = self.search.step(
+                 step,
+                 lprobs.view(bsz, -1, self.vocab_size),
+@@ -377,6 +413,11 @@ class SequenceGenerator(nn.Module):
+                     attn = attn.view(bsz, -1)[batch_idxs].view(
+                         new_bsz * beam_size, attn.size(1), -1
+                     )
++
++                if self.extractive_penalty is not None:
++                    self.extractive_penalty = [self.extractive_penalty[i * beam_size + b]
++                                               for i in batch_idxs
++                                               for b in range(beam_size)]
+                 bsz = new_bsz
+             else:
+                 batch_idxs = None
+@@ -405,7 +446,7 @@ class SequenceGenerator(nn.Module):
+             active_bbsz_idx = torch.gather(cand_bbsz_idx, dim=1, index=active_hypos)
+             active_scores = torch.gather(cand_scores, dim=1, index=active_hypos)
+ 
+-            active_bbsz_idx = active_bbsz_idx.view(-1)
++            active_bbsz_idx = active_bbsz_idx.view(-1).long()
+             active_scores = active_scores.view(-1)
+ 
+             # copy tokens and scores for active hypotheses
+@@ -415,6 +456,7 @@ class SequenceGenerator(nn.Module):
+             tokens.view(bsz, beam_size, -1)[:, :, step + 1] = torch.gather(
+                 cand_indices, dim=1, index=active_hypos
+             )
++
+             if step > 0:
+                 scores[:, :step] = torch.index_select(
+                     scores[:, :step], dim=0, index=active_bbsz_idx
+@@ -502,6 +544,7 @@ class SequenceGenerator(nn.Module):
+         assert bbsz_idx.numel() == eos_scores.numel()
+ 
+         # clone relevant token and attention tensors
++        bbsz_idx = bbsz_idx.long()
+         tokens_clone = tokens.index_select(0, bbsz_idx)[
+             :, 1 : step + 2
+         ]  # skip the first index, which is EOS
+diff --git fairseq/tasks/fairseq_task.py fairseq/tasks/fairseq_task.py
+index 5036cfe..6439cc5 100644
+--- fairseq/tasks/fairseq_task.py
++++ fairseq/tasks/fairseq_task.py
+@@ -312,6 +312,7 @@ class FairseqTask(object):
+             match_source_len=getattr(args, "match_source_len", False),
+             no_repeat_ngram_size=getattr(args, "no_repeat_ngram_size", 0),
+             search_strategy=search_strategy,
++            extractive_penalty_fct=getattr(args, "extractive_penalty_fct", None)
+         )
+ 
+     def train_step(
+@@ -351,9 +352,9 @@ class FairseqTask(object):
+             loss, sample_size, logging_output = criterion(model, sample)
+         return loss, sample_size, logging_output
+ 
+-    def inference_step(self, generator, models, sample, prefix_tokens=None):
++    def inference_step(self, generator, models, sample, prefix_tokens=None, **kwargs):
+         with torch.no_grad():
+-            return generator.generate(models, sample, prefix_tokens=prefix_tokens)
++            return generator.generate(models, sample, prefix_tokens=prefix_tokens, **kwargs)
+ 
+     def begin_epoch(self, epoch, model):
+         """Hook function called before the start of each epoch."""
