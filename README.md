@@ -153,7 +153,7 @@ This dataset contains 10.2k human factuality judgements:
 
 For each of the 10.2k summaries, one randomly selected sentence (displayed in context) was annotated for factuality by three annotators, and an aggregated judgement (produced by MACE) has been added.
 
-See details [here](datasets/constraints_fact/README.md).
+See details [here](datasets/constraints-fact/README.md).
 
 ### ModelsFact
 
@@ -172,7 +172,7 @@ XSum
 
 For each of these 4.2k summaries, one randomly selected sentence (displayed in context) was annotated for factuality by three annotators, and an aggregated judgement (produced by MACE) has been added.
 
-See details [here](datasets/models_fact/README.md).
+See details [here](datasets/models-fact/README.md).
 
 ## Citation
 
