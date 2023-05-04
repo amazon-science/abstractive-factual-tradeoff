@@ -99,10 +99,13 @@ To run it, first install Fairseq into a parent directory, then apply
 our diff file `fairseq-1e40a48.diff`, which inserts calls to the
 `abstractive_constraints` library:
 
-``` cd ~ git clone https://github.com/pytorch/fairseq.git cd fairseq
-git reset --hard 1e40a48 pip install --editable ./ patch -p0 <
-~/abstractive-factual-tradeoff/fairseq-1e40a48.diff # from this repo
-```
+    cd ~
+    git clone https://github.com/pytorch/fairseq.git
+    cd fairseq
+    git reset --hard 1e40a48
+    pip install --editable ./
+    patch -p0 < ~/abstractive-factual-tradeoff/fairseq-1e40a48.diff # from this repo
+
 
 You can then run inference with a BART model using abstractiveness
 constraints as follows.
@@ -111,20 +114,23 @@ First, download the `bart.large.cnn` model (see
 [here](https://github.com/facebookresearch/fairseq/blob/main/examples/bart/README.md))
 and unpack it:
 
-``` mkdir -p ~/fairseq/models cd ~/fairseq/models wget
-https://dl.fbaipublicfiles.com/fairseq/models/bart.large.tar.gz tar
--xzf bart.large.tar.gz ```
+    mkdir -p ~/fairseq/models
+    cd ~/fairseq/models
+    wget https://dl.fbaipublicfiles.com/fairseq/models/bart.large.tar.gz
+    tar -xzf bart.large.tar.gz
 
 Then, use our `misc/bart_decode.py` script, which takes an
 `--extractive-penalty` as a command line option to control
 abstractiveness:
 
-``` python ${HOME}/abstractive-factual-tradeoff/misc/bart_decode.py \
---extractive-penalty 'log_exp(2,2.402244)' \ --gpus=4 --batch-size=4
---min-len=55 --max-len-b=140 \
---model=${HOME}/fairseq/models/bart.large.cnn/model.pt \
---task=${HOME}/fairseq/models/bart.large.cnn \ --output output.txt
-input.txt ```
+    python ${HOME}/abstractive-factual-tradeoff/misc/bart_decode.py \
+      --extractive-penalty 'log_exp(2,2.402244)' \
+      --gpus=4 --batch-size=4
+      --min-len=55 --max-len-b=140 \
+      --model=${HOME}/fairseq/models/bart.large.cnn/model.pt \
+      --task=${HOME}/fairseq/models/bart.large.cnn \
+      --output output.txt
+      input.txt
 
 The `log_exp(k,c)` stands for the function `x**k/c**k`, where `x` is
 the length of an extractive fragment. In the example command above, we
@@ -170,14 +176,14 @@ See details [here](datasets/models_fact/README.md).
 
 ## Citation
 
-``` @inproceedings{dreyer-etal-2023-tradeoff, title = "Evaluating the
-Tradeoff Between Abstractiveness and Factuality in Abstractive
-Summarization", author = "Dreyer, Markus and Liu, Mengwen and Nan,
-Feng and Atluri, Sandeep and Ravi, Sujith", booktitle = "Findings of
-the European Association for Computational Linguistics: EACL 2023",
-month = may, year = "2023", address = "Dubrovnik, Croatia", publisher
-= "Association for Computational Linguistics", url =
-"https://arxiv.org/abs/2108.02859" } ```
+    @inproceedings{dreyer-etal-2023-tradeoff, title = "Evaluating the
+    Tradeoff Between Abstractiveness and Factuality in Abstractive
+    Summarization", author = "Dreyer, Markus and Liu, Mengwen and Nan,
+    Feng and Atluri, Sandeep and Ravi, Sujith", booktitle = "Findings
+    of the European Association for Computational Linguistics: EACL
+    2023", month = may, year = "2023", address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics", url =
+    "https://arxiv.org/abs/2108.02859" }
 
 ## Security
 
@@ -187,3 +193,11 @@ more information.
 ## License
 
 This project is licensed under the MIT-0 License.
+
+Tweet
+
+Don't miss our paper "Evaluating the Tradeoff Between Abstractiveness and Factuality in Abstractive Summarization" at #EACL2023 (Findings)!
+
+https://aclanthology.org/2023.findings-eacl.156/
+https://arxiv.org/abs/2108.02859
+
