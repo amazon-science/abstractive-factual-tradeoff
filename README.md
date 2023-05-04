@@ -1,23 +1,30 @@
-# Evaluating the Tradeoff Between Abstractiveness and Factuality in
-  Abstractive Summarization
+# Evaluating the Tradeoff Between Abstractiveness and Factuality in Abstractive Summarization
 
-[**MINT Abstractiveness Score**](#mint-abstractiveness-score) |
-[**Nonlinear Abstractiveness
-Constraints**](#nonlinear-abstractiveness-constraints) |
-[**Datasets**](#datasets) | [**Citation**](#citation) |
-[**Security**](#security) | [**License**](#license)
+Jump to:
 
-This repository contains the code for the [Dreyer et al
-(2023)](https://arxiv.org/abs/2108.02859) paper (**the dataset will be
-added soon**):
+* [**MINT Abstractiveness Score**](#mint-abstractiveness-score)
+* [**Nonlinear Abstractiveness Constraints**](#nonlinear-abstractiveness-constraints)
+* [**Datasets**](#datasets)
+* [**Citation**](#citation)
+* [**Security**](#security)
+* [**License**](#license)
+
+This is the repository for the [Dreyer et al
+(2023)](https://arxiv.org/abs/2108.02859) paper:
 
 > Markus Dreyer, Mengwen Liu, Feng Nan, Sandeep Atluri, Sujith
   Ravi. 2023. Evaluating the Tradeoff Between Abstractiveness and
   Factuality in Abstractive Summarization. In *Proceedings of EACL
   Findings*.
 
-**Abstract:** Neural models for abstractive summarization tend to
-  generate output that is fluent and well-formed but lacks semantic
+The repository contains our code and two datasets:
+
+* ConstraintsFact: 10.2k factuality judgements
+* ModelsFact: 4.2k factuality judgements
+
+
+**Paper abstract:** Neural models for abstractive summarization tend
+  to generate output that is fluent and well-formed but lacks semantic
   faithfulness, or factuality, with respect to the input documents. In
   this paper, we analyze the tradeoff between abstractiveness and
   factuality of generated summaries across multiple datasets and
