@@ -194,10 +194,3 @@ more information.
 
 This project is licensed under the MIT-0 License.
 
-Tweet
-
-Don't miss our paper "Evaluating the Tradeoff Between Abstractiveness and Factuality in Abstractive Summarization" at #EACL2023 (Findings)!
-
-https://aclanthology.org/2023.findings-eacl.156/
-https://arxiv.org/abs/2108.02859
-
