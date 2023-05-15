@@ -16,12 +16,13 @@ LONG_DESCRIPTION = (HERE / "README.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
 
 PATH=os.path.dirname(os.path.realpath(__file__))
+MINTLCS_PATH=os.path.realpath(f'{PATH}/../mintlcs')
 
 INSTALL_REQUIRES = [
     "spacy",
     "scipy",
     "joblib",
-    f"mintlcs @ file://{PATH}/../mintlcs"
+    f"mintlcs @ file://localhost/{MINTLCS_PATH}"
     ]
 
 setup(name=PACKAGE_NAME,
