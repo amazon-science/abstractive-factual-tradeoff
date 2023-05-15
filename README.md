@@ -51,22 +51,23 @@ generated text.
 
 To install, type:
 
-    cd mintscore pip install ./
+    cd mintscore
+    pip install ./
     
 The `pip` command installs a script called `mint`, which you can call
 like this:
 
-    # Show help text mint --help
+    # Show help text
+    mint --help
 
-    # Score output with respect to the corresponding input
-    (line-by-line results) mint --source input.txt output.txt
+    # Score output with respect to the corresponding input (line-by-line results)
+    mint --source input.txt output.txt
 
-    # Score output with respect to the corresponding input (compact
-    results) mint --compact --source input.txt output.txt
+    # Score output with respect to the corresponding input (compact results)
+    mint --compact --source input.txt output.txt
 
 
 ## Nonlinear Abstractiveness Constraints
-
 
 Our paper introduces nonlinear abstractiveness constraints to control
 the degree of abstractiveness during beam decoding. Using the
@@ -83,7 +84,8 @@ library called `abstractive_constraints`.
 
 To install, type:
 
-    cd abstractive_constraints pip install ./
+    cd abstractive_constraints
+    pip install ./
 
 The library provides functionality to incrementally build a target
 sequence, compute matches against source tokens and then score (or,
@@ -129,7 +131,7 @@ abstractiveness:
       --min-len=55 --max-len-b=140 \
       --model=${HOME}/fairseq/models/bart.large.cnn/model.pt \
       --task=${HOME}/fairseq/models/bart.large.cnn \
-      --output output.txt
+      --output output.txt \
       input.txt
 
 The `log_exp(k,c)` stands for the function `x**k/c**k`, where `x` is
@@ -176,14 +178,17 @@ See details [here](datasets/models-fact/README.md).
 
 ## Citation
 
-    @inproceedings{dreyer-etal-2023-tradeoff, title = "Evaluating the
-    Tradeoff Between Abstractiveness and Factuality in Abstractive
-    Summarization", author = "Dreyer, Markus and Liu, Mengwen and Nan,
-    Feng and Atluri, Sandeep and Ravi, Sujith", booktitle = "Findings
-    of the European Association for Computational Linguistics: EACL
-    2023", month = may, year = "2023", address = "Dubrovnik, Croatia",
-    publisher = "Association for Computational Linguistics", url =
-    "https://arxiv.org/abs/2108.02859" }
+    @inproceedings{dreyer-etal-2023-tradeoff,
+      title = "Evaluating the Tradeoff Between Abstractiveness and Factuality in Abstractive Summarization",
+      author = "Dreyer, Markus and Liu, Mengwen and Nan, Feng and Atluri, Sandeep and Ravi, Sujith",
+      booktitle = "Findings of the European Association for Computational Linguistics: EACL
+    2023",
+      month = {May},
+      year = "2023",
+      address = "Dubrovnik, Croatia",
+      publisher = "Association for Computational Linguistics",
+      url = "https://arxiv.org/abs/2108.02859"
+    }
 
 ## Security
 
