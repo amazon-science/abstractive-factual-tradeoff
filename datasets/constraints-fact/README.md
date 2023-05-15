@@ -19,14 +19,15 @@ For each of the 10.2k summaries, one randomly selected sentence (displayed in co
 * `summary_sentence_contextleft`: Left context of the `summary_sentence`
 * `summary_sentence_contextright`: Right context of the `summary_sentence`
 * `abstractiveness_constraint`: Abstractiveness constraint used to generate this summary (`none`, `lambda2`, `lambda4`, `1/lambda2`, or `1/lambda1`, see [our paper](https://arxiv.org/abs/2108.02859))
+* `model_name`: Name of the model that generated the summary (i.e., always `bart`)
 * `annotator_comments`: Comments from the annotators
 * `annotator_ids`: Anonymized annotator IDs
 * `annotator_votes`: Factuality votes from the annotators (0=not factually consistent with the displayed document(s); 1=factually consistent)
 * `annotator_votes_combined`: Aggregated factuality judgement from MACE
-* `dataset_name`: Name of the dataset, i.e., `cnn_dailymail`, `xsum`, `multi_news_500`, or `multi_news_800`
+* `dataset_name`: Name of the dataset (`cnn_dailymail`, `xsum`, `multi_news_500`, or `multi_news_800`)
 * `document_full`: Complete input document(s) 
 * `document_short`: Shortened document(s) displayed to the annotators, which contains the sentences most similar to the `summary_sentence`.
-* `document_id`: Document ID
+* `document_id`: Document ID in `dataset_name`
 
 ## Download
 
@@ -42,6 +43,7 @@ Here is a sample entry from the XSum portion of the dataset:
   "summary_sentence": "Former Foreign Secretary Philip Hammond has said the UK's policy in Syria has been hampered by \"wishful thinking\" - and officials underestimated the staying power of President Bashar al-Assad.",
   "summary_sentence_contextleft": [],
   "summary_sentence_contextright": [],
+  "model_name": "bart",
   "summary": "Former Foreign Secretary Philip Hammond has said the UK's policy in Syria has been hampered by \"wishful thinking\" - and officials underestimated the staying power of President Bashar al-Assad.",
   "annotator_ids": [
     "annotator_80",

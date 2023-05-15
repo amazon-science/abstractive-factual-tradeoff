@@ -17,20 +17,21 @@ For each of these 4.2k summaries, one randomly selected sentence (displayed in c
 
 ## Fields
 
-* `id`: ID between 0 and 10199
+* `id`: ID between 0 and 4199
 * `summary`: Complete summary
 * `summary_sentence`: The randomly selected summary sentence that annotators judged for factuality
 * `summary_sentence_contextleft`: Left context of the `summary_sentence`
 * `summary_sentence_contextright`: Right context of the `summary_sentence`
+* `model_name`: Name of the model that generated the summary (`abs_rl`, `bart`, `bert_sum`, `bottom_up`, or `pointer_gen_cov`)
 * `abstractiveness_constraint`: Abstractiveness constraint used to generate this summary (`none`, `lambda2`, `lambda4`, `1/lambda2`, or `1/lambda1`, see [our paper](https://arxiv.org/abs/2108.02859))
 * `annotator_comments`: Comments from the annotators
 * `annotator_ids`: Anonymized annotator IDs
 * `annotator_votes`: Factuality votes from the annotators (0=not factually consistent with the displayed document(s); 1=factually consistent)
 * `annotator_votes_combined`: Aggregated factuality judgement from MACE
-* `dataset_name`: Name of the dataset, i.e., `cnn_dailymail`, `xsum`, `multi_news_500`, or `multi_news_800`
+* `dataset_name`: Name of the dataset (`cnn_dailymail` or `xsum`)
 * `document_full`: Complete input document(s) 
 * `document_short`: Shortened document(s) displayed to the annotators, which contains the sentences most similar to the `summary_sentence`.
-* `document_id`: Document ID
+* `document_id`: Document ID in `dataset_name`
 
 ## Download
 
