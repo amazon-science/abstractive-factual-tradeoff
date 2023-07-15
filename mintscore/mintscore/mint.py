@@ -141,10 +141,12 @@ def main(arguments):
             yield s.strip(), t.strip()
 
     try:
-        nlp = spacy.load("en_core_web_sm", disable=["ner", "tagger", "parser"])
+        nlp = spacy.load("en_core_web_sm",
+                         disable=["ner", "tagger", "parser", "lemmatizer"])
     except:
         spacy.cli.download("en_core_web_sm")
-        nlp = spacy.load("en_core_web_sm", disable=["ner", "tagger", "parser"])
+        nlp = spacy.load("en_core_web_sm",
+                         disable=["ner", "tagger", "parser", "lemmatizer"])
         
     batches = minibatch(yield_input(src_stream, tgt_stream), size=args.batch_size)
     executor = Parallel(n_jobs=args.jobs, backend="multiprocessing", prefer="processes", 

@@ -6,6 +6,6 @@ constraints to control abstractivenes.
 Install
 -------
 
-To install, type `pip install ./abstractive_constraints`.
+To install, type `pip install ./abstractive_constraints` in the root folder of this repository.
 
 

@@ -7,6 +7,6 @@ generated text*.
 Install
 -------
 
-To install, type `pip install mintscore`.
+To install, type `pip install ./mintscore` in the root folder of this repository.
 
 

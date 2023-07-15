@@ -19,7 +19,7 @@ PATH=os.path.dirname(os.path.realpath(__file__))
 MINTLCS_PATH=os.path.realpath(f'{PATH}/../mintlcs')
 
 INSTALL_REQUIRES = [
-    "spacy",
+    "spacy<3.4",
     "scipy",
     "joblib",
     f"mintlcs @ file://localhost/{MINTLCS_PATH}"
