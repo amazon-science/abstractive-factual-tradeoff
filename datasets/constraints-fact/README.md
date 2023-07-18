@@ -33,8 +33,7 @@ For each of the 10.2k summaries, one randomly selected sentence (displayed in co
 
 ## Download
 
-This dataset can be downloaded here: <a
-hfref="https://d1f9rvlwrb54wt.cloudfront.net/abstractive-factual-tradeoff/data/constraints_fact_v1.0.tar.gz">constraints_fact_v1.0.tar.gz</a>
+This dataset can be downloaded here: [constraints_fact_v1.0.tar.gz](https://d1f9rvlwrb54wt.cloudfront.net/abstractive-factual-tradeoff/data/constraints_fact_v1.0.tar.gz)
 
 The dataset does not contain the input articles from CNN/DM, XSum, and Multi-News, but we provide a script that will insert them from the corresponding Huggingface datasets. Run the script like this:
 

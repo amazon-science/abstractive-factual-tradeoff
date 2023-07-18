@@ -37,8 +37,7 @@ For each of these 4.2k summaries, one randomly selected sentence (displayed in c
 
 ## Download
 
-This dataset can be downloaded here: <a
-hfref="https://d1f9rvlwrb54wt.cloudfront.net/abstractive-factual-tradeoff/data/models_fact_v1.0.tar.gz">models_fact_v1.0.tar.gz</a>
+This dataset can be downloaded here: [models_fact_v1.0.tar.gz](https://d1f9rvlwrb54wt.cloudfront.net/abstractive-factual-tradeoff/data/models_fact_v1.0.tar.gz)
 
 The dataset does not contain the input articles from CNN/DM and XSum, but we provide a script that will insert them from the corresponding Huggingface datasets. Run the script like this:
 
