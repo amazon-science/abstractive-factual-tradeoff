@@ -14,10 +14,11 @@ For each of the 10.2k summaries, one randomly selected sentence (displayed in co
 ## Fields
 
 * `id`: ID between 0 and 10199
-* `summary`: Complete summary
-* `summary_sentence`: The randomly selected summary sentence that annotators judged for factuality
-* `summary_sentence_contextleft`: Left context of the `summary_sentence`
-* `summary_sentence_contextright`: Right context of the `summary_sentence`
+* `summary_raw`: Complete summary in original form.
+* `summary`: Complete summary as displayed to the annotators. This is the same as `summary_raw`, except for Multi-News where `summary` is a cleaned version of `summary_raw` with incomplete sentences at the end as well as phrases like "as reported by XYZ" are removed.
+* `summary_sentence`: The randomly selected summary sentence from `summary` that annotators judged for factuality
+* `summary_sentence_contextleft`: Left context of the `summary_sentence` in `summary`
+* `summary_sentence_contextright`: Right context of the `summary_sentence` in `summary`
 * `abstractiveness_constraint`: Abstractiveness constraint used to generate this summary (`none`, `lambda2`, `lambda4`, `1/lambda2`, or `1/lambda1`, see [our paper](https://arxiv.org/abs/2108.02859))
 * `model_name`: Name of the model that generated the summary (i.e., always `bart`)
 * `annotator_comments`: Comments from the annotators
@@ -25,14 +26,23 @@ For each of the 10.2k summaries, one randomly selected sentence (displayed in co
 * `annotator_votes`: Factuality votes from the annotators (0=not factually consistent with the displayed document(s); 1=factually consistent)
 * `annotator_votes_combined`: Aggregated factuality judgement from MACE
 * `dataset_name`: Name of the dataset (`cnn_dailymail`, `xsum`, `multi_news_500`, or `multi_news_800`)
-* `document_full`: Complete input document(s) 
-* `document_short`: Shortened document(s) displayed to the annotators, which contains the sentences most similar to the `summary_sentence`.
 * `document_id`: Document ID in `dataset_name`
+* `document_full`: Complete input document(s) 
+* `document_short`: Shortened version of `document_full` that was displayed to the annotators; contains the sentences most similar to the `summary_sentence`.
+* `document_original`: Original input document(s) from the test set. This is the same as `document_full` except for XSum, where `document_full` contains the first sentence reinserted, but `document_original` does not (see Footnote 6 of the <a href="https://arxiv.org/abs/2108.02859">paper</a>).
 
 ## Download
 
-**This dataset will be available for download soon.**
+This dataset can be downloaded here: <a
+hfref="https://d1f9rvlwrb54wt.cloudfront.net/abstractive-factual-tradeoff/data/constraints_fact_v1.0.tar.gz">constraints_fact_v1.0.tar.gz</a>
 
+The dataset does not contain the input articles from CNN/DM, XSum, and Multi-News, but we provide a script that will insert them from the corresponding Huggingface datasets. Run the script like this:
+
+    python abstractive-factual-tradeoff/misc/unpack.py /path/to/models_fact_v1.0.tar.gz
+
+That will create a directory `/path/to/models_fact_v1.0` next to the tarball. The directory will contain a `data.jsonl` file with the dataset. It will also contain directories with the full `test.source` and `test.target` files for `cnn_dailymail`, `xsum`, `multi_news_500` and `multi_news_800`.
+
+    
 ## Sample
 
 Here is a sample entry from the XSum portion of the dataset:
@@ -45,6 +55,7 @@ Here is a sample entry from the XSum portion of the dataset:
   "summary_sentence_contextright": [],
   "model_name": "bart",
   "summary": "Former Foreign Secretary Philip Hammond has said the UK's policy in Syria has been hampered by \"wishful thinking\" - and officials underestimated the staying power of President Bashar al-Assad.",
+  "summary_raw": "Former Foreign Secretary Philip Hammond has said the UK's policy in Syria has been hampered by \"wishful thinking\" - and officials underestimated the staying power of President Bashar al-Assad.",
   "annotator_ids": [
     "annotator_80",
     "annotator_53",
@@ -65,6 +76,7 @@ Here is a sample entry from the XSum portion of the dataset:
   "document_short": "Russian's intervention in Syria is \"hugely significant\" says the UK's former senior military adviser in the Middle East Lt Gen Sir Simon Mayall. 2 October 2015 Last updated at 18:13 BST Speaking in an interview with BBC Newsnight's diplomatic and defence editor Mark Urban, he said UK policy in Syria had been hampered by \"wishful thinking\" - and officials underestimated the staying power of President Bashar al-Assad. More on this story from Mark Urban on BBC Newsnight at 22:30 BST BBC Two on Friday 2 October, and afterwards on iPlayer",
   "document_id": "56",
   "document_full": "Russian's intervention in Syria is \"hugely significant\" says the UK's former senior military adviser in the Middle East Lt Gen Sir Simon Mayall. 2 October 2015 Last updated at 18:13 BST Speaking in an interview with BBC Newsnight's diplomatic and defence editor Mark Urban, he said UK policy in Syria had been hampered by \"wishful thinking\" - and officials underestimated the staying power of President Bashar al-Assad. More on this story from Mark Urban on BBC Newsnight at 22:30 BST BBC Two on Friday 2 October, and afterwards on iPlayer",
+  "document_original": "2 October 2015 Last updated at 18:13 BST Speaking in an interview with BBC Newsnight's diplomatic and defence editor Mark Urban, he said UK policy in Syria had been hampered by \"wishful thinking\" - and officials underestimated the staying power of President Bashar al-Assad. More on this story from Mark Urban on BBC Newsnight at 22:30 BST BBC Two on Friday 2 October, and afterwards on iPlayer",
   "annotator_votes_combined": 0
 }
 ```
