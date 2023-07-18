@@ -43,4 +43,4 @@ The dataset does not contain the input articles from CNN/DM and XSum, but we pro
 
     python abstractive-factual-tradeoff/misc/unpack.py /path/to/models_fact_v1.0.tar.gz
 
-That will create a directory `/path/to/models_fact_v1.0` next to the tarball. The directory will contain a `data.jsonl` file with the dataset. It will also contain directories with thefull `test.source` and `test.target` files for `cnn_dailymail` and `xsum`.
+That will create a directory `/path/to/models_fact_v1.0` next to the tarball. The directory will contain a `data.jsonl` file with the dataset. It will also contain directories with the full `test.source` and `test.target` files for `cnn_dailymail` and `xsum`.
