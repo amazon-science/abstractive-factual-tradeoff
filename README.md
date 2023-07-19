@@ -46,8 +46,8 @@ The repository contains our code and two datasets:
 
 Our paper introduces the MINT score to measure the degree of
 abstractiveness as a percentage score. It is computed based on
-contiguous and non-contiguous overlap between the input and the
-generated text.
+contiguous and non-contiguous overlap between the input (source) and the
+generated output text (target).
 
 To install, type:
 
@@ -60,11 +60,11 @@ like this:
     # Show help text
     mint --help
 
-    # Score output with respect to the corresponding input (line-by-line results)
-    mint --source input.txt output.txt
+    # Score target with respect to the corresponding source (line-by-line results on STDOUT)
+    mint --source source.txt target.txt
 
-    # Score output with respect to the corresponding input (compact results)
-    mint --compact --source input.txt output.txt
+    # Score target with respect to the corresponding source (compact results on STDOUT)
+    mint --compact --source source.txt target.txt
 
 
 ## Nonlinear Abstractiveness Constraints
